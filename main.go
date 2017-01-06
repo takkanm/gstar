@@ -1,8 +1,12 @@
 package main
 
 import (
+	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
+	"os/user"
+	"path/filepath"
 
 	"github.com/mitchellh/cli"
 )
@@ -34,6 +38,20 @@ func (c *AddToken) Help() string {
 }
 
 func (c *AddToken) Run(args []string) int {
+	u, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	configFile := filepath.Join(u.HomeDir, ".config", "gstar.config")
+
+	err = ioutil.WriteFile(configFile, []byte(args[0]), 0666)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "write config file is failed.")
+		return 1
+	}
+	fmt.Println("write ", configFile)
+
 	return 0
 }
 
