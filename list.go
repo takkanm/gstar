@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -8,6 +9,12 @@ import (
 )
 
 type ListStars struct {
+}
+
+type Star struct {
+	FullName    string `json:"full_name"`
+	Description string `json:"description"`
+	Language    string `json:language`
 }
 
 func (c *ListStars) Synopsis() string {
@@ -18,10 +25,34 @@ func (c *ListStars) Help() string {
 	return "Usage: gstar list"
 }
 
+var descLenMax = 100
+
 func (c *ListStars) Run(args []string) int {
 	token, _ := ioutil.ReadFile(ConfigFileName())
 	starList := GetStarList(string(token), 1)
-	fmt.Println(starList)
+
+	stars := make([]Star, 0)
+	json.Unmarshal([]byte(starList), &stars)
+
+	maxTitleLen := 0
+	for _, star := range stars {
+		titleLen := len(star.FullName)
+		if maxTitleLen < titleLen {
+			maxTitleLen = titleLen
+		}
+	}
+
+	for _, star := range stars {
+		descLen := len(star.Description)
+		descSuffix := ""
+		if descLen > descLenMax {
+			descLen = descLenMax - 3
+			descSuffix = "..."
+		}
+
+		fmt.Printf("%*s : %v\n", maxTitleLen, star.FullName, star.Description[0:descLen]+descSuffix)
+	}
+
 	return 0
 }
 
