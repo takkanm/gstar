@@ -3,10 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
-	"os/user"
-	"path/filepath"
 )
 
 type AddToken struct {
@@ -21,14 +18,9 @@ func (c *AddToken) Help() string {
 }
 
 func (c *AddToken) Run(args []string) int {
-	u, err := user.Current()
-	if err != nil {
-		log.Fatal(err)
-	}
+	configFile := ConfigFileName()
 
-	configFile := filepath.Join(u.HomeDir, ".config", "gstar.config")
-
-	err = ioutil.WriteFile(configFile, []byte(args[0]), 0666)
+	err := ioutil.WriteFile(configFile, []byte(args[0]), 0666)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "write config file is failed.")
 		return 1
