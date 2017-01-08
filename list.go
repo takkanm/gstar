@@ -12,6 +12,11 @@ import (
 type ListStars struct {
 }
 
+type StarList struct {
+	page  int
+	stars []Star
+}
+
 type Star struct {
 	FullName    string `json:"full_name"`
 	Description string `json:"description"`
@@ -34,10 +39,12 @@ func (c *ListStars) Run(args []string) int {
 	listFlag.Parse(args)
 
 	token, _ := ioutil.ReadFile(ConfigFileName())
-	starList := GetStarList(string(token), *page)
 
-	stars := make([]Star, 0)
-	json.Unmarshal([]byte(starList), &stars)
+	ch := make(chan StarList, 1)
+	go RequestStars(string(token), *page, ch)
+
+	starList := <-ch
+	stars := starList.stars
 
 	maxTitleLen := 0
 	for _, star := range stars {
@@ -59,6 +66,14 @@ func (c *ListStars) Run(args []string) int {
 	}
 
 	return 0
+}
+
+func RequestStars(token string, page int, ch chan<- StarList) {
+	starList := StarList{page: page}
+	starJSON := GetStarList(string(token), page)
+
+	json.Unmarshal([]byte(starJSON), &starList.stars)
+	ch <- starList
 }
 
 func GetStarList(token string, page int) string {
