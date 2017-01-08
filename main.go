@@ -9,7 +9,7 @@ import (
 	"github.com/mitchellh/cli"
 )
 
-func ConfigFileName() string {
+func configFileName() string {
 	u, err := user.Current()
 	if err != nil {
 		log.Fatal(err)

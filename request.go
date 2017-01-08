@@ -18,15 +18,15 @@ type Star struct {
 	Language    string `json:language`
 }
 
-func RequestStars(token string, page int, ch chan<- StarList) {
+func requestStars(token string, page int, ch chan<- StarList) {
 	starList := StarList{page: page}
-	starJSON := GetStarList(string(token), page)
+	starJSON := getStarList(string(token), page)
 
 	json.Unmarshal([]byte(starJSON), &starList.stars)
 	ch <- starList
 }
 
-func GetStarList(token string, page int) string {
+func getStarList(token string, page int) string {
 	client := &http.Client{}
 
 	req, _ := http.NewRequest("GET", "https://api.github.com/user/starred?page="+strconv.Itoa(page), nil)

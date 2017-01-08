@@ -18,7 +18,7 @@ func (c *AddToken) Help() string {
 }
 
 func (c *AddToken) Run(args []string) int {
-	configFile := ConfigFileName()
+	configFile := configFileName()
 
 	err := ioutil.WriteFile(configFile, []byte(args[0]), 0666)
 	if err != nil {

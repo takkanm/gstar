@@ -24,10 +24,10 @@ func (c *ListStars) Run(args []string) int {
 	page := listFlag.Int("page", 1, "show page number")
 	listFlag.Parse(args)
 
-	token, _ := ioutil.ReadFile(ConfigFileName())
+	token, _ := ioutil.ReadFile(configFileName())
 
 	ch := make(chan StarList, 1)
-	go RequestStars(string(token), *page, ch)
+	go requestStars(string(token), *page, ch)
 
 	starList := <-ch
 	stars := starList.stars
