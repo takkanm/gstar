@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -28,8 +29,12 @@ func (c *ListStars) Help() string {
 var descLenMax = 100
 
 func (c *ListStars) Run(args []string) int {
+	listFlag := flag.NewFlagSet("list", flag.ExitOnError)
+	page := listFlag.Int("page", 1, "show page number")
+	listFlag.Parse(args)
+
 	token, _ := ioutil.ReadFile(ConfigFileName())
-	starList := GetStarList(string(token), 1)
+	starList := GetStarList(string(token), *page)
 
 	stars := make([]Star, 0)
 	json.Unmarshal([]byte(starList), &stars)
@@ -59,7 +64,7 @@ func (c *ListStars) Run(args []string) int {
 func GetStarList(token string, page int) string {
 	client := &http.Client{}
 
-	req, _ := http.NewRequest("GET", "https://api.github.com/user/starred?page"+strconv.Itoa(page), nil)
+	req, _ := http.NewRequest("GET", "https://api.github.com/user/starred?page="+strconv.Itoa(page), nil)
 	req.Header.Add("Authorization", "token "+token)
 
 	resp, _ := client.Do(req)
