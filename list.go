@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 )
 
 type ListStars struct {
@@ -24,10 +23,10 @@ func (c *ListStars) Run(args []string) int {
 	page := listFlag.Int("page", 1, "show page number")
 	listFlag.Parse(args)
 
-	token, _ := ioutil.ReadFile(configFileName())
+	token := readToken()
 
 	ch := make(chan StarList, 1)
-	go requestStars(string(token), *page, ch)
+	go requestStars(token, *page, ch)
 
 	starList := <-ch
 	stars := starList.stars

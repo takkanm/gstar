@@ -3,20 +3,9 @@ package main
 import (
 	"log"
 	"os"
-	"os/user"
-	"path/filepath"
 
 	"github.com/mitchellh/cli"
 )
-
-func configFileName() string {
-	u, err := user.Current()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return filepath.Join(u.HomeDir, ".config", "gstar.config")
-}
 
 func main() {
 	c := cli.NewCLI("gstar", "0.1.0")

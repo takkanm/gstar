@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 )
 
@@ -18,14 +17,12 @@ func (c *AddToken) Help() string {
 }
 
 func (c *AddToken) Run(args []string) int {
-	configFile := configFileName()
-
-	err := ioutil.WriteFile(configFile, []byte(args[0]), 0666)
+	err := writeToken(args[0])
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "write config file is failed.")
 		return 1
 	}
-	fmt.Println("write ", configFile)
 
+	fmt.Println("write token to ", configFileName())
 	return 0
 }
