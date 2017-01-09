@@ -21,33 +21,41 @@ var descLenMax = 100
 func (c *ListStars) Run(args []string) int {
 	listFlag := flag.NewFlagSet("list", flag.ExitOnError)
 	page := listFlag.Int("page", 1, "show page number")
+	allStars := listFlag.Bool("all-stars", false, "show all stars")
 	listFlag.Parse(args)
 
 	token := readToken()
+	lastPage := *page
 
-	ch := make(chan StarList, 1)
-	go requestStars(token, *page, ch)
-
-	starList := <-ch
-	stars := starList.stars
-
-	maxTitleLen := 0
-	for _, star := range stars {
-		titleLen := len(star.FullName)
-		if maxTitleLen < titleLen {
-			maxTitleLen = titleLen
-		}
+	if *allStars {
+		lastPage = getStarPageCount(token)
 	}
 
-	for _, star := range stars {
-		descLen := len(star.Description)
-		descSuffix := ""
-		if descLen > descLenMax {
-			descLen = descLenMax - 3
-			descSuffix = "..."
+	for i := *page; i <= lastPage; i++ {
+		ch := make(chan StarList, 1)
+		go requestStars(token, i, ch)
+
+		starList := <-ch
+		stars := starList.stars
+
+		maxTitleLen := 0
+		for _, star := range stars {
+			titleLen := len(star.FullName)
+			if maxTitleLen < titleLen {
+				maxTitleLen = titleLen
+			}
 		}
 
-		fmt.Printf("%*s : %v\n", maxTitleLen, star.FullName, star.Description[0:descLen]+descSuffix)
+		for _, star := range stars {
+			descLen := len(star.Description)
+			descSuffix := ""
+			if descLen > descLenMax {
+				descLen = descLenMax - 3
+				descSuffix = "..."
+			}
+
+			fmt.Printf("%*s : %v\n", maxTitleLen, star.FullName, star.Description[0:descLen]+descSuffix)
+		}
 	}
 
 	return 0
