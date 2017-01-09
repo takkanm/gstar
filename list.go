@@ -54,7 +54,7 @@ func (c *ListStars) Run(args []string) int {
 				descSuffix = "..."
 			}
 
-			fmt.Printf("%*s : %v\n", maxTitleLen, star.FullName, star.Description[0:descLen]+descSuffix)
+			fmt.Printf("%*s : %v\n", maxTitleLen*-1, star.FullName, star.Description[0:descLen]+descSuffix)
 		}
 	}
 
