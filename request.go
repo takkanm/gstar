@@ -28,6 +28,23 @@ func requestStars(token string, page int, ch chan<- StarList) {
 	ch <- starList
 }
 
+func getStars(token string, firstPage int, lastPage int) []StarList {
+	requestPageSize := lastPage - firstPage + 1
+	results := make([]StarList, requestPageSize)
+	ch := make(chan StarList, 1)
+
+	for i := firstPage; i <= lastPage; i++ {
+		go requestStars(token, i, ch)
+	}
+
+	for i := 0; i < requestPageSize; i++ {
+		starList := <-ch
+		results = append(results, starList)
+	}
+
+	return results
+}
+
 func getStarPageCount(token string) int {
 	client := &http.Client{}
 

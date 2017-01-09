@@ -30,21 +30,26 @@ func (c *ListStars) Run(args []string) int {
 	if *allStars {
 		lastPage = getStarPageCount(token)
 	}
+	starLists := getStars(token, *page, lastPage)
+	showStars(starLists)
 
-	for i := *page; i <= lastPage; i++ {
-		ch := make(chan StarList, 1)
-		go requestStars(token, i, ch)
+	return 0
+}
 
-		starList := <-ch
+func showStars(starLists []StarList) {
+	maxTitleLen := 0
+	for _, starList := range starLists {
 		stars := starList.stars
-
-		maxTitleLen := 0
 		for _, star := range stars {
 			titleLen := len(star.FullName)
 			if maxTitleLen < titleLen {
 				maxTitleLen = titleLen
 			}
 		}
+	}
+
+	for _, starList := range starLists {
+		stars := starList.stars
 
 		for _, star := range stars {
 			descLen := len(star.Description)
@@ -57,6 +62,4 @@ func (c *ListStars) Run(args []string) int {
 			fmt.Printf("%*s : %v\n", maxTitleLen*-1, star.FullName, star.Description[0:descLen]+descSuffix)
 		}
 	}
-
-	return 0
 }
