@@ -17,6 +17,9 @@ func main() {
 		"list": func() (cli.Command, error) {
 			return &ListStars{}, nil
 		},
+		"search": func() (cli.Command, error) {
+			return &SearchStars{}, nil
+		},
 	}
 
 	exitStatus, err := c.Run()
