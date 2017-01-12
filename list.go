@@ -31,12 +31,14 @@ func (c *ListStars) Run(args []string) int {
 		lastPage = getStarPageCount(token)
 	}
 	starLists := getStars(token, *page, lastPage)
-	showStars(starLists)
+	showStars(starLists, func(_ Star) bool {
+		return true
+	})
 
 	return 0
 }
 
-func showStars(starLists []StarList) {
+func showStars(starLists []StarList, f func(Star) bool) {
 	maxTitleLen := 0
 	for _, starList := range starLists {
 		stars := starList.stars
@@ -58,8 +60,9 @@ func showStars(starLists []StarList) {
 				descLen = descLenMax - 3
 				descSuffix = "..."
 			}
-
-			fmt.Printf("%*s : %v\n", maxTitleLen*-1, star.FullName, star.Description[0:descLen]+descSuffix)
+			if f(star) {
+				fmt.Printf("%*s : %v\n", maxTitleLen*-1, star.FullName, star.Description[0:descLen]+descSuffix)
+			}
 		}
 	}
 }
