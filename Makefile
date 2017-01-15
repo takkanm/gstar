@@ -14,6 +14,9 @@ deps:
 build: deps
 	go build -ldflags "-X main.GitCommit=$(COMMIT)" -o bin/$(BINARY_NAME)
 
+pkg: deps
+	gox -os "darwin linux windows" -arch="386 amd64" -output "pkg/{{.OS}}_{{.Arch}}/{{.Dir}}"
+
 install: deps
 	go install -ldflags "-X main.GitCommit=$(COMMIT)"
 
