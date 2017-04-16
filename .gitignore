@@ -1,2 +1,4 @@
 gstar
 bin/gstar
+pkg/windows_386/
+pkg/windows_amd64/
