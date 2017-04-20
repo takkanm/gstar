@@ -5,19 +5,23 @@ import (
 	"fmt"
 )
 
+// ListStars is struct for list command
 type ListStars struct {
 }
 
+// Synopsis is list command synopsis
 func (c *ListStars) Synopsis() string {
 	return "list stared repository"
 }
 
+// Help is list command help
 func (c *ListStars) Help() string {
 	return "Usage: gstar list"
 }
 
 var descLenMax = 100
 
+// Run is main method for list command
 func (c *ListStars) Run(args []string) int {
 	listFlag := flag.NewFlagSet("list", flag.ExitOnError)
 	page := listFlag.Int("page", 1, "show page number")

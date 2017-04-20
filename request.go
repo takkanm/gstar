@@ -9,11 +9,13 @@ import (
 	"strings"
 )
 
+// StarList is struct for GitHub Star page
 type StarList struct {
 	page  int
 	stars []Star
 }
 
+// Star is struct for GitHub Star
 type Star struct {
 	FullName    string `json:"full_name"`
 	Description string `json:"description"`
