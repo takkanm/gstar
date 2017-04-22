@@ -1,4 +1,5 @@
 # gstar
+[![Build Status](https://travis-ci.org/takkanm/gstar.svg?branch=master)](https://travis-ci.org/takkanm/gstar)
 
 `gstar` is cli tool for GitHub stars.
 
