@@ -22,7 +22,7 @@ install: deps
 
 test-all: vet test
 
-test:
+test: lint
 	go test -v -parallel=4 .
 
 test-race:
